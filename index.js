@@ -50,12 +50,44 @@ async function run() {
         res.send(result)
     })
 
-    app.post("/carts",async(req,res)=>{
-      const cart=req.body;
-      console.log(cart)
-      const result=await CartCollection.insertOne(cart)
-      res.send(result)
+    
+
+
+    app.post("/carts", async (req, res) => {
+      const cart = req.body;
+    
+      try {
+        const result = await CartCollection.insertOne(cart);
+        res.send(result);
+      }
+      
+      catch (error) {
+        // console.log(error)
+        if (error.code === 11000) {
+       
+      res.status(400).send({ success: false, message: 'Duplicate entry' })
+     
+
+        } else {
+         
+
+          res.status(500).send({ success: false, message: error.message })
+        }
+      }
     })
+    
+    app.get('/carts',async(req,res)=>{
+        const cursor= CartCollection.find()
+        const result=await cursor.toArray();
+        res.send(result)
+    })
+
+
+
+
+
+
+
 
 
 
