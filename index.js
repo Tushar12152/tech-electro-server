@@ -44,6 +44,26 @@ async function run() {
            res.send(result)
     })
 
+    app.put("/products/:id",async(req,res)=>{
+        const id=req.params.id;
+        const query={_id:new ObjectId(id)}
+        const options = { upsert: true };
+         const updatedProduct=req.body;
+        const Product={
+          $set:{
+            name:updatedProduct.name,
+            brand:updatedProduct.brand,
+            type:updatedProduct.type,
+            price:updatedProduct.price,
+            description:updatedProduct.description,
+            rating:updatedProduct.rating,
+            photo:updatedProduct.photo,
+          }
+        }
+        const result = await ProductCollection.updateOne(query, Product, options);
+        res.send(result)
+    })
+
     app.get('/products',async(req,res)=>{
         const cursor=ProductCollection.find();
         const result= await cursor.toArray();
